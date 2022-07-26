@@ -1,0 +1,65 @@
+package ru.job4j.thread;
+
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+
+/**
+ * 4. Скачивание файла с ограничением.
+ * Чтобы ограничить скорость скачивания, нужно засечь время скачивания 1024 байт.
+ * Если время меньше указанного, то нужно выставить паузу за счет Thread.sleep.
+ * Пауза должна вычисляться, а не быть константой.
+ *
+ * @author Svistunov Mikhail
+ * @version 1.0
+ */
+public class Wget implements Runnable {
+    private final String url;
+    private final int speed;
+
+    public Wget(String url, int speed) {
+        this.url = url;
+        this.speed = speed;
+    }
+
+    @Override
+    public void run() {
+        try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream("pom_tmp.xml")) {
+            byte[] dataBuffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                long time = System.currentTimeMillis();
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+                time = System.currentTimeMillis() - time;
+                if (time < speed) {
+                    Thread.sleep(1000);
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        validate(args);
+        String url = args[0];
+        int speed = Integer.parseInt(args[1]);
+        Thread wget = new Thread(new Wget(url, speed));
+        wget.start();
+        wget.join();
+    }
+
+    private static void validate(String[] args) {
+        if (args.length != 2) {
+            throw new IllegalArgumentException("Enter url and speed");
+        }
+        if (!args[0].startsWith("https")) {
+            throw new IllegalArgumentException("Parameter url must start with \"https\"");
+        }
+        if (Integer.parseInt(args[1]) <= 0) {
+            throw new IllegalArgumentException("Speed should be positive");
+        }
+    }
+}
