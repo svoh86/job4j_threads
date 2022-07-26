@@ -34,7 +34,7 @@ public class Wget implements Runnable {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
                 time = System.currentTimeMillis() - time;
                 if (time < speed) {
-                    Thread.sleep(1000);
+                    Thread.sleep(1000 - time);
                 }
             }
         } catch (IOException | InterruptedException e) {
