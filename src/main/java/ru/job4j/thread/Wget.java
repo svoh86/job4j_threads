@@ -16,7 +16,6 @@ import java.nio.file.Paths;
  * @author Svistunov Mikhail
  * @version 1.1
  * скорость скачивания - байты в секунду. 1 мб/с = 1048576 байт/c.
- * https://proof.ovh.net/files/10Mb.dat
  */
 public class Wget implements Runnable {
     private final String url;
