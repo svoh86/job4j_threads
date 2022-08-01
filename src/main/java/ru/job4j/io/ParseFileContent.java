@@ -19,24 +19,16 @@ public final class ParseFileContent {
         return checkContent(file, character -> character > 0x80);
     }
 
-    public void saveContent(String content, ParseFile file) throws IOException {
-        try (OutputStream o = new BufferedOutputStream(new FileOutputStream(file.getFile()))) {
-            for (int i = 0; i < content.length(); i++) {
-                o.write(content.charAt(i));
-            }
-        }
-    }
-
     private static String checkContent(ParseFile file, Predicate<Character> filter) throws IOException {
         try (InputStream i = new BufferedInputStream(new FileInputStream(file.getFile()))) {
-            String output = "";
+            StringBuilder output = new StringBuilder();
             int data;
             while ((data = i.read()) != -1) {
                 if (filter.test((char) data)) {
-                    output += (char) data;
+                    output.append((char) data);
                 }
             }
-            return output;
+            return output.toString();
         }
     }
 }
