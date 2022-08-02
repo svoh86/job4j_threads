@@ -59,7 +59,7 @@ class AccountStorageTest {
     void whenAccountNotExist() {
         AccountStorage storage = new AccountStorage();
         storage.add(new Account(1, 100));
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> storage.transfer(1, 2, 200));
+        boolean rsl = storage.transfer(1, 2, 200);
+        assertThat(rsl).isFalse();
     }
 }

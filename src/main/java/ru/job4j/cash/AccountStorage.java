@@ -42,35 +42,28 @@ public class AccountStorage {
      * false - если key нет в HashMap.
      */
     public synchronized boolean update(Account account) {
-        int key = account.id();
-        return accounts.replace(key, accounts.get(key), account);
+        return accounts.replace(account.id(), account) != null;
     }
 
     public synchronized boolean delete(int id) {
-        return accounts.remove(id, accounts.get(id));
+        return accounts.remove(id) != null;
     }
 
     public synchronized Optional<Account> getById(int id) {
-        Optional<Account> rsl = Optional.empty();
-        Account account = accounts.get(id);
-        if (account != null) {
-            rsl = Optional.of(account);
-        }
-        return rsl;
+        return Optional.ofNullable(accounts.get(id));
     }
 
     public boolean transfer(int fromId, int toId, int amount) {
         boolean flag = false;
-        Account accountFrom = getById(fromId)
-                .orElseThrow(() -> new IllegalArgumentException("Not found account by id"));
-        Account accountTo = getById(toId)
-                .orElseThrow(() -> new IllegalArgumentException("Not found account by id"));
-        if (accountFrom.amount() >= amount) {
-            update(new Account(accountFrom.id(), accountFrom.amount() - amount));
-            update(new Account(accountTo.id(), accountTo.amount() + amount));
+        Optional<Account> accountFrom = getById(fromId);
+        Optional<Account> accountTo = getById(toId);
+        if (accountFrom.isPresent() && accountTo.isPresent()
+            && accountFrom.get().amount() >= amount) {
+            update(new Account(accountFrom.get().id(), accountFrom.get().amount() - amount));
+            update(new Account(accountTo.get().id(), accountTo.get().amount() + amount));
             flag = true;
         } else {
-            System.out.println("Not enough funds");
+            System.out.println("Not enough funds or account isn`t exist");
         }
         return flag;
     }
