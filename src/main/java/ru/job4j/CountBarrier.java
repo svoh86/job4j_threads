@@ -22,10 +22,11 @@ public class CountBarrier {
 
     /**
      * Метод count изменяет состояние программы.
+     * Сначала изменяем состояние, а лишь потом оповещаем другие нити.
      */
     public synchronized void count() {
-        monitor.notifyAll();
         count++;
+        monitor.notifyAll();
     }
 
     /**
