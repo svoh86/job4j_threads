@@ -58,13 +58,9 @@ public class SimpleBlockingQueue<T> {
      *
      * @return элемент из очереди
      */
-    public synchronized T poll() {
+    public synchronized T poll() throws InterruptedException {
         while (queue.size() == 0) {
-            try {
-                monitor.wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            monitor.wait();
         }
         T element = queue.poll();
         System.out.println("Consumer retrieved: " + element);
