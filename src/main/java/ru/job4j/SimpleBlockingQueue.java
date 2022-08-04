@@ -37,13 +37,9 @@ public class SimpleBlockingQueue<T> {
      *
      * @param value значение
      */
-    public synchronized void offer(T value) {
+    public synchronized void offer(T value) throws InterruptedException {
         while (queue.size() >= total) {
-            try {
-                monitor.wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            monitor.wait();
         }
         queue.offer(value);
         System.out.println("Producer add: " + value);

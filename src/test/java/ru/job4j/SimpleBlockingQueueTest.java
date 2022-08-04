@@ -13,7 +13,11 @@ class SimpleBlockingQueueTest {
                 () -> {
                     System.out.println(Thread.currentThread().getName() + " started");
                     for (int i = 0; i < 5; i++) {
-                        queue.offer(i);
+                        try {
+                            queue.offer(i);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 "Producer"
