@@ -63,4 +63,8 @@ public class SimpleBlockingQueue<T> {
         monitor.notify();
         return element;
     }
+
+    public synchronized boolean isEmpty() {
+        return queue.isEmpty();
+    }
 }
