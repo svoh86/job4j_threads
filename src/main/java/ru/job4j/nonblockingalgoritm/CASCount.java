@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @ThreadSafe
 public class CASCount {
-    private final AtomicReference<Integer> count = new AtomicReference<>();
+    private final AtomicReference<Integer> count = new AtomicReference<>(0);
 
     /**
      * expectedCount - переменная, которой присвоим текущее значение сount.
