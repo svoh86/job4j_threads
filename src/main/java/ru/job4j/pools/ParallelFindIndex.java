@@ -14,13 +14,13 @@ import java.util.concurrent.RecursiveTask;
  * @author Svistunov Mikhail
  * @version 1.0
  */
-public class ParallelFindIndex extends RecursiveTask<Integer> {
-    private final int[] array;
+public class ParallelFindIndex<T> extends RecursiveTask<Integer> {
+    private final T[] array;
     private final int from;
     private final int to;
-    private final int find;
+    private final T find;
 
-    public ParallelFindIndex(int[] array, int from, int to, int find) {
+    public ParallelFindIndex(T[] array, int from, int to, T find) {
         this.array = array;
         this.from = from;
         this.to = to;
@@ -33,8 +33,8 @@ public class ParallelFindIndex extends RecursiveTask<Integer> {
             return indexOf(array, from, to, find);
         }
         int mid = (from + to) / 2;
-        ParallelFindIndex leftSort = new ParallelFindIndex(array, from, mid, find);
-        ParallelFindIndex rightSort = new ParallelFindIndex(array, mid + 1, to, find);
+        ParallelFindIndex<T> leftSort = new ParallelFindIndex<>(array, from, mid, find);
+        ParallelFindIndex<T> rightSort = new ParallelFindIndex<>(array, mid + 1, to, find);
         leftSort.fork();
         rightSort.fork();
         int left = leftSort.join();
@@ -42,7 +42,7 @@ public class ParallelFindIndex extends RecursiveTask<Integer> {
         return Math.max(left, right);
     }
 
-    private int indexOf(int[] array, int from, int to, int find) {
+    private int indexOf(T[] array, int from, int to, T find) {
         int rsl = -1;
         for (int i = from; i <= to; i++) {
             if (array[i] == find) {
@@ -53,13 +53,13 @@ public class ParallelFindIndex extends RecursiveTask<Integer> {
         return rsl;
     }
 
-    public static int findIndex(int[] array, int find) {
+    public static <T> int findIndex(T[] array, T find) {
         ForkJoinPool forkJoinPool = new ForkJoinPool();
-        return forkJoinPool.invoke(new ParallelFindIndex(array, 0, array.length - 1, find));
+        return forkJoinPool.invoke(new ParallelFindIndex<>(array, 0, array.length - 1, find));
     }
 
     public static void main(String[] args) {
-        int[] array = new int[100];
+        Integer[] array = new Integer[100];
         for (int i = 0; i < 100; i++) {
             array[i] = i;
         }
