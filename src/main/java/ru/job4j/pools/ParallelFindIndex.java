@@ -45,7 +45,7 @@ public class ParallelFindIndex<T> extends RecursiveTask<Integer> {
     private int indexOf(T[] array, int from, int to, T find) {
         int rsl = -1;
         for (int i = from; i <= to; i++) {
-            if (array[i] == find) {
+            if (find.equals(array[i])) {
                 rsl = i;
                 break;
             }
